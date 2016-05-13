@@ -37,17 +37,15 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.statusMonitorControl1.Location = new System.Drawing.Point(12, 12);
+            this.statusMonitorControl1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.statusMonitorControl1.Name = "statusMonitorControl1";
             this.statusMonitorControl1.Size = new System.Drawing.Size(260, 237);
             this.statusMonitorControl1.TabIndex = 0;
             // 
             // StatusMonitorDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.statusMonitorControl1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "StatusMonitorDialog";
             this.ShowInTaskbar = false;
             this.Text = "StatusMonitorDialog";
