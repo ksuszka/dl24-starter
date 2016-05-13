@@ -39,7 +39,11 @@ namespace Acme.FooBarPlayer
                 {
                     service.Login(Login, Password);
 
-                    var state = StateHelper.Load<Dictionary<int, int>>() ?? new Dictionary<int, int>();
+                    // Usually games in DL24 are divided into matches. Each match has its own "world". To be able to reload
+                    // player during single match the state of the world is saved after each turn and it is restored when
+                    // player is restarted.
+                    var state = StateHelper.Load<WorldState>() ?? new WorldState();
+
                     int tick = 0;
                     var turnStopwatch = new Stopwatch();
                     while (true)
@@ -57,7 +61,7 @@ namespace Acme.FooBarPlayer
                                 Monitor.SetValue("engine/turn", turnNo);
                                 Monitor.SetValue("engine/tick", tick);
                                 Logger.Debug("tick {0}, turn {1}", tick, turnNo);
-                                state[turnNo] = tick;
+                                state.Something = string.Format("Turn: {0}, tick: {1}", turnNo, tick);
 
                                 if (tick % 5 == 0)
                                 {
