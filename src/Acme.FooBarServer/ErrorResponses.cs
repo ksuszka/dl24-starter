@@ -8,8 +8,7 @@ namespace Acme.FooBarServer
         //public const string BadFormat = "FAILED 3 bad format";
         //public const string TooManyArguments = "FAILED 4 too many arguments";
         //public const string InternalError = "FAILED 5 internal error, sorry...";
-        //public const string CommandLimitReaching = "FAILED 6 commands limit reached, next call will force waiting";
-        //public const string CommandsLimitReached = "FAILED 7 commands limit reached, forced waiting activated";
+        public const string CommandLimitReaching = "FAILED 6 commands limit reached, forced waiting activated";
         //public const string BadCave = "FAILED 100 bad cave identifier";
         //public const string NoTunnel = "FAILED 101 there is no tunnel between given caves";
         //public const string NotEnoughEnergy = "FAILED 102 not enough energy";

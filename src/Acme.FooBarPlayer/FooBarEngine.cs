@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Chupacabra.PlayerCore.Host;
 using Chupacabra.PlayerCore.Service;
 using NLog;
@@ -39,27 +41,56 @@ namespace Acme.FooBarPlayer
 
                     var state = StateHelper.Load<Dictionary<int, int>>() ?? new Dictionary<int, int>();
                     int tick = 0;
+                    var turnStopwatch = new Stopwatch();
                     while (true)
                     {
-                        //ProcessCommands();
-                        ++tick;
-                        var turnNo = service.GetTurn();
-                        Monitor.SetValue("engine/turn", turnNo);
-                        Monitor.SetValue("engine/tick", tick);
-                        Logger.Debug("tick {0}, turn {1}", tick, turnNo);
-                        state[turnNo] = tick;
-                        if (tick%10 == 0)
+                        // Begining of a new turn.
+                        turnStopwatch.Restart();
+                        try
                         {
-                            Logger.Info("data {0}", string.Join(", ", service.GetPrices()));
-                        }
-                        Monitor.ConfirmTurn();
-                        StateHelper.Save(state);
+                            try
+                            {
+                                ++tick;
+                                var turnNo = service.GetTurn();
 
-                        // Wait till next turn.
-                        // If you want to do some calculations before next turn starts you can use the value returned
-                        // from Wait method to estimate how much time you have.
-                        service.Wait();
-                        service.WaitEnd();
+                                // Monitor is shown by pressing SPACE BAR in console window.
+                                Monitor.SetValue("engine/turn", turnNo);
+                                Monitor.SetValue("engine/tick", tick);
+                                Logger.Debug("tick {0}, turn {1}", tick, turnNo);
+                                state[turnNo] = tick;
+
+                                if (tick % 5 == 0)
+                                {
+                                    // Simulate some command.
+                                    Logger.Info("data {0}", string.Join(", ", service.GetPrices()));
+                                }
+
+                                if (tick % 10 == 0)
+                                {
+                                    // Simulate command limit reached exception.
+                                    Enumerable.Range(0, 20).ToList().ForEach(_ => service.GetPrices());
+                                }
+
+                            }
+                            finally
+                            {
+                                Monitor.ConfirmTurn();
+                                StateHelper.Save(state);
+                                Logger.Info($"Turn length {turnStopwatch.ElapsedMilliseconds} ms");
+                            }
+
+                            // Wait till next turn.
+                            // If you want to do some calculations before next turn starts you can use the value returned
+                            // from Wait method to estimate how much time you have.
+                            service.Wait();
+                            service.WaitEnd();
+                        }
+                        catch (CommandsLimitReachedException ex)
+                        {
+                            Logger.Warn(ex.Message);
+                            service.WaitEnd();
+                        }
+
                     }
                 }
                 Logger.Info("Processing finished.");
