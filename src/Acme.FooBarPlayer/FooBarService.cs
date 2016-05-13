@@ -22,6 +22,7 @@ namespace Acme.FooBarPlayer
         public IEnumerable<double> GetPrices()
         {
             SendCommand("PRICES");
+            // ReadTokens method can be used to read output from command returing data separated by white spaces.
             var reader = ReadTokens();
             return new Double[]
             {

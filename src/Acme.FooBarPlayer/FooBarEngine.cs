@@ -48,12 +48,21 @@ namespace Acme.FooBarPlayer
                     var turnStopwatch = new Stopwatch();
                     while (true)
                     {
-                        // Begining of a new turn.
+                        // Beginning of a new turn.
                         turnStopwatch.Restart();
                         try
                         {
                             try
                             {
+                                // If the game can have multiple matches/worlds here should be code which detects if world has changed
+                                // and resets world state. Something like:
+                                // var world = service.DescribeWorld();
+                                // if (world.turnNo < state.world.turnNo || world.boardSize != state.world.boardSize || ...)
+                                // {
+                                //     state.world = world;
+                                //     // reset other things
+                                // }
+
                                 ++tick;
                                 var turnNo = service.GetTurn();
 
@@ -74,10 +83,10 @@ namespace Acme.FooBarPlayer
                                     // Simulate command limit reached exception.
                                     Enumerable.Range(0, 20).ToList().ForEach(_ => service.GetPrices());
                                 }
-
                             }
                             finally
                             {
+                                // Mark turn as finished even in case of error.
                                 Monitor.ConfirmTurn();
                                 StateHelper.Save(state);
                                 Logger.Info($"Turn length {turnStopwatch.ElapsedMilliseconds} ms");
@@ -94,7 +103,6 @@ namespace Acme.FooBarPlayer
                             Logger.Warn(ex.Message);
                             service.WaitEnd();
                         }
-
                     }
                 }
                 Logger.Info("Processing finished.");
@@ -103,10 +111,10 @@ namespace Acme.FooBarPlayer
             {
                 Logger.Error(ex.Message);
                 LogManager.Flush();
-                if (System.Diagnostics.Debugger.IsAttached)
+                if (Debugger.IsAttached)
                 {
                     // If this code is run under a debugger then we signal it that something went really wrong.
-                    System.Diagnostics.Debugger.Break();
+                    Debugger.Break();
                 }
             }
         }
