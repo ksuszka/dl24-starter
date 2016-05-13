@@ -11,10 +11,22 @@
             _secondMonitor = secondMonitor;
         }
 
-        public void SetValue(string key, object value)
+        public void Set(string key, object value)
         {
-            _firstMonitor.SetValue(key, value);
-            _secondMonitor.SetValue(key, value);
+            _firstMonitor.Set(key, value);
+            _secondMonitor.Set(key, value);
+        }
+
+        public void Delete(string key)
+        {
+            _firstMonitor.Delete(key);
+            _secondMonitor.Delete(key);
+        }
+
+        public void DeleteChildren(string key)
+        {
+            _firstMonitor.DeleteChildren(key);
+            _secondMonitor.DeleteChildren(key);
         }
 
         public void ConfirmTurn()

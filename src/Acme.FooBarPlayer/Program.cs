@@ -40,7 +40,7 @@ namespace Acme.FooBarPlayer
                     ServerPort = Properties.Settings.Default.ServerPort,
                     Login = Properties.Settings.Default.Login,
                     Password = Properties.Settings.Default.Password,
-                    Monitor = new CompositeStatusMonitor(_fileStatusMonitor, _formsStatusMonitor)
+                    Monitor = new CompositeStatusMonitor(_fileStatusMonitor, _formsStatusMonitor.StatusMonitor)
                 };
 
                 if (args.Length > 0)

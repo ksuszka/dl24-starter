@@ -39,15 +39,6 @@ namespace Chupacabra.PlayerCore.Host.Forms
             _uiInitialized.Set();
             Application.Run(_applicationContext);
         }
-        public void SetValue(string key, object value)
-        {
-            _dialog.SetValue(key, value);
-        }
-
-        public void ConfirmTurn()
-        {
-            _dialog.ConfirmTurn();
-        }
 
         public void Dispose()
         {
@@ -65,5 +56,7 @@ namespace Chupacabra.PlayerCore.Host.Forms
         {
             _synchronizationContext.Post(_ => ShowWindow(), null);
         }
+
+        public IStatusMonitor StatusMonitor { get { return this._dialog.StatusMonitor; } }
     }
 }

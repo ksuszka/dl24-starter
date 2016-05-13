@@ -78,10 +78,17 @@ namespace Acme.FooBarPlayer
                                 var turnNo = service.GetTurn();
 
                                 // Monitor is shown by pressing SPACE BAR in console window.
-                                Monitor.SetValue("engine/turn", turnNo);
-                                Monitor.SetValue("engine/tick", tick);
+                                Monitor.Set("engine/turn", turnNo);
+                                Monitor.Set("engine/tick", tick);
                                 Logger.Debug("tick {0}, turn {1}", tick, turnNo);
                                 state.Something = string.Format("Turn: {0}, tick: {1}", turnNo, tick);
+
+                                // More complex sample of using monitor
+                                Monitor.Delete("example1");
+                                Monitor.Set(string.Format("example1/u_{0}", turnNo), tick);
+
+                                Monitor.DeleteChildren("example2");
+                                Monitor.Set(string.Format("example2/u_{0}", turnNo), tick);
 
                                 if (tick % 5 == 0)
                                 {
@@ -122,7 +129,6 @@ namespace Acme.FooBarPlayer
                         }
                     }
                 }
-                Logger.Info("Processing finished.");
             }
             catch (Exception ex)
             {

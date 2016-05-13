@@ -21,25 +21,17 @@ namespace Chupacabra.PlayerCore.Host.Forms
             InitializeComponent();
         }
 
-        public void SetValue(string key, object value)
-        {
-            statusMonitorControl1.SetValue(key, value);
-        }
-
-        public void ConfirmTurn()
-        {
-            statusMonitorControl1.ConfirmTurn();
-        }
-
         private void StatusMonitorDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
             Hide();
         }
 
-        public void BringToFront()
+        public new void BringToFront()
         {
             SwitchToThisWindow(this.Handle, true);
         }
+
+        public IStatusMonitor StatusMonitor { get { return this.statusMonitorControl1; } }
     }
 }

@@ -46,14 +46,20 @@ namespace Chupacabra.PlayerCore.Tests
                 mock.Protected().Setup("WriteData", ItExpr.IsAny<string>()).Callback((string s) => { result = s; });
                 var monitor = mock.Object;
 
-                monitor.SetValue("level1_1", "something");
-                monitor.SetValue("level1_2/level2_1/level3_1", "something else");
-                monitor.SetValue("level1_2/level2_1/level3_1/level4_1", "something else");
-                monitor.SetValue("level1_2/level2_2", "something else");
-                monitor.SetValue("level1_3/level2", "another thing");
-                monitor.SetValue("level1_2/level2_1/level3_2/level4_2", "something else 2");
-                monitor.SetValue("level1_2/level2_1/level3_2", "something else 2");
-                monitor.SetValue("level1_2/level2_1", null);
+                monitor.Set("level1_1", "something");
+                monitor.Set("level1_2/level2_1/level3_1", "something else");
+                monitor.Set("level1_2/level2_1/level3_1/level4_1", "something else");
+                monitor.Set("level1_2/level2_2", "something else");
+                monitor.Set("level1_3/level2", "another thing");
+                monitor.Set("level1_2/level2_1/level3_2/level4_2", "something else 2");
+                monitor.Set("level1_2/level2_1/level3_2", "something else 2");
+                monitor.Set("level1_2/level2_1", null);
+                monitor.Set("level1_4/level2_1", "branch 1");
+                monitor.Set("level1_4/level2_1/level3_1", "something");
+                monitor.Set("level1_4/level2_2", "branch 2");
+                monitor.Set("level1_4/level2_2/level3_1", "something");
+                monitor.Delete("level1_4/level2_1");
+                monitor.DeleteChildren("level1_4/level2_2");
                 monitor.ConfirmTurn();
                 Assert.AreEqual(
 @"+- level1_1: something
@@ -64,8 +70,10 @@ namespace Chupacabra.PlayerCore.Tests
 |  |  `- level3_2: something else 2
 |  |     `- level4_2: something else 2
 |  `- level2_2: something else
-`- level1_3
-   `- level2: another thing
++- level1_3
+|  `- level2: another thing
+`- level1_4
+   `- level2_2: branch 2
 ",
                                result);
 

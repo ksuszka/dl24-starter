@@ -18,16 +18,24 @@ namespace Chupacabra.PlayerCore.Host
             _filePath = filePath;
         }
 
-        public void SetValue(string key, object value)
+        public void Set(string key, object value)
         {
             // Normalize key
-            var normalizedKey = "/" +
-                         string.Join("/",
-                             (key ?? "").Split(@"/\".ToCharArray())
-                                 .Where(k => !string.IsNullOrWhiteSpace(k))
-                                 .Select(k => k.Trim()));
+            var normalizedKey = NormalizeKey(key);
             var valueText = (value != null) ? value.ToString() : "null";
             _values.AddOrUpdate(normalizedKey, valueText, (k, v) => valueText);
+        }
+
+        public void Delete(string key)
+        {
+            var normalizedKey = NormalizeKey(key);
+            RemoveKeys(normalizedKey);
+        }
+
+        public void DeleteChildren(string key)
+        {
+            var normalizedKey = NormalizeKey(key) + "/";
+            RemoveKeys(normalizedKey);
         }
 
         public void ConfirmTurn()
@@ -88,6 +96,28 @@ namespace Chupacabra.PlayerCore.Host
         protected virtual void WriteData(string text)
         {
             File.WriteAllText(_filePath, text);
+        }
+
+        private static string NormalizeKey(string key)
+        {
+            return "/" +
+                   string.Join("/",
+                       (key ?? "").Split(@"/\".ToCharArray())
+                           .Where(k => !string.IsNullOrWhiteSpace(k))
+                           .Select(k => k.Trim()));
+        }
+
+        private void RemoveKeys(string key)
+        {
+            var keys = _values.Keys.ToList();
+            foreach (var k in keys)
+            {
+                if (k.StartsWith(key))
+                {
+                    string out2;
+                    _values.TryRemove(k, out out2);
+                }
+            }
         }
     }
 }

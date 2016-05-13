@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Chupacabra.PlayerCore.Host.Forms
 {
-    public interface IStatusMonitorDialog : IStatusMonitor, IDisposable
+    public interface IStatusMonitorDialog : IDisposable
     {
         void Show();
+
+        IStatusMonitor StatusMonitor { get; }
     }
 }

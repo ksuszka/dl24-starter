@@ -8,7 +8,9 @@ namespace Chupacabra.PlayerCore.Host
 {
     public interface IStatusMonitor
     {
-        void SetValue(string key, object value);
+        void Set(string key, object value);
+        void Delete(string key);
+        void DeleteChildren(string key);
         void ConfirmTurn();
     }
 }
