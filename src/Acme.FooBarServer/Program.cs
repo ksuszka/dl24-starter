@@ -26,6 +26,20 @@ namespace Acme.FooBarServer
         private delegate void CommandHandler(
             StreamReader reader, StreamWriter writer, GameEngine engine, int playerId, string parameters);
 
+        static void WaitCommand(StreamReader reader, StreamWriter writer, GameEngine engine, int playerId, string parameters)
+        {
+            long timeToNextTurn = 0;
+            WaitHandle waitHandle;
+            lock (engine)
+            {
+                timeToNextTurn = engine.TimeToNextTick;
+                waitHandle = engine.TurnTick;
+            }
+            writer.WriteLine(string.Format(NumberFormatInfo.InvariantInfo, "OK\nWAITING {0:F6}", timeToNextTurn / 1000.0));
+            waitHandle.WaitOne();
+            writer.WriteLine(string.Format(NumberFormatInfo.InvariantInfo, "OK"));
+        }
+
         static void TurnCommand(StreamReader reader, StreamWriter writer, GameEngine engine, int playerId, string parameters)
         {
             long turnNumber = 0;
@@ -62,6 +76,7 @@ namespace Acme.FooBarServer
         {
             var commandHandlers = new Dictionary<string, CommandHandler>()
             {
+                {"WAIT", WaitCommand},
                 {"TURN", TurnCommand},
                 {"ENERGY", EnergyCommand},
                 {"PRICES", PricesCommand}
@@ -144,7 +159,8 @@ namespace Acme.FooBarServer
 
         static void Main(string[] args)
         {
-            var engine = new GameEngine();
+            int turnDuration = 2000;    // ms
+            var engine = new GameEngine(turnDuration);
 
             engine.AddPlayers(new Tuple<string, string>[]
                 {
@@ -154,7 +170,6 @@ namespace Acme.FooBarServer
                     Tuple.Create("c", "d"),
                     Tuple.Create("d", "d")
                 });
-            int turnDuration = 2000;    // ms
             int port = 20000;
 
             Task.Factory.StartNew(

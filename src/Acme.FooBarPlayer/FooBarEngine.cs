@@ -20,7 +20,7 @@ namespace Acme.FooBarPlayer
             {
                 if (errorCodes.Contains(se.ErrorCode))
                 {
-                    Logger.Warn("INGORING: {0}", se.Message);
+                    Logger.Warn("IGNORING: {0}", se.Message);
                 }
                 else
                     throw;
@@ -54,18 +54,25 @@ namespace Acme.FooBarPlayer
                         }
                         Monitor.ConfirmTurn();
                         StateHelper.Save(state);
-                        if (_cancellationToken.WaitHandle.WaitOne(2000))
-                        {
-                            break;
-                        }
+
+                        // Wait till next turn.
+                        // If you want to do some calculations before next turn starts you can use the value returned
+                        // from Wait method to estimate how much time you have.
+                        service.Wait();
+                        service.WaitEnd();
                     }
                 }
                 Logger.Info("Processing finished.");
-
             }
             catch (Exception ex)
             {
                 Logger.Error(ex.Message);
+                LogManager.Flush();
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    // If this code is run under a debugger then we signal it that something went really wrong.
+                    System.Diagnostics.Debugger.Break();
+                }
             }
         }
     }

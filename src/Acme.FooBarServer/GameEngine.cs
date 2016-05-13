@@ -1,23 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Acme.FooBarServer
 {
     public class GameEngine
     {
+        private readonly int _turnDuration;
         public IDictionary<int, Player> Players { get; private set; }
 
         public IDictionary<string, int> PlayerTokens { get; private set; }
         public long TurnNumber { get; private set; }
-
+        public ManualResetEvent TurnTick { get; private set; }
         private Random random = new Random();
+        private DateTime _lastTickTime;
 
-        public GameEngine()
+        public int TimeToNextTick
         {
+            get { return Math.Max(0, _turnDuration - (DateTime.UtcNow - _lastTickTime).Milliseconds); }
+        }
+
+        public GameEngine(int turnDuration)
+        {
+            this._turnDuration = turnDuration;
             this.Players = new Dictionary<int, Player>();
             this.PlayerTokens = new Dictionary<string, int>();
             this.TurnNumber = 0;
+            this.TurnTick = new ManualResetEvent(false);
+            this._lastTickTime = DateTime.UtcNow;
         }
 
         private string GetLoginHash(string login, string password)
@@ -70,6 +81,9 @@ namespace Acme.FooBarServer
             }
 
             ++this.TurnNumber;
+            this._lastTickTime = DateTime.UtcNow;
+            this.TurnTick.Set();
+            this.TurnTick.Reset();
         }
     }
 }
