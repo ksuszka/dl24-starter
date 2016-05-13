@@ -12,7 +12,7 @@ namespace Acme.FooBarPlayer
     {
         public IStatusMonitor Monitor { get; set; }
 
-        void IgnoreErrors(Action action, IList<int> errorCodes)
+        void IgnoreErrors(Action action, params int[] errorCodes)
         {
             try 
             {
@@ -27,7 +27,18 @@ namespace Acme.FooBarPlayer
                 else
                     throw;
             }
+        }
 
+        void IgnoreAllErrors(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (ServerException se)
+            {
+                Logger.Warn("IGNORING: {0}", se.Message);
+            }
         }
 
         protected override void Run()
@@ -76,6 +87,12 @@ namespace Acme.FooBarPlayer
                                 {
                                     // Simulate some command.
                                     Logger.Info("data {0}", string.Join(", ", service.GetPrices()));
+
+                                    // Another command for which we ignore some errors
+                                    IgnoreErrors(() =>
+                                    {
+                                        Logger.Info("data {0}", string.Join(", ", service.GetPrices()));
+                                    }, 101, 102);
                                 }
 
                                 if (tick % 10 == 0)
