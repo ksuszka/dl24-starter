@@ -90,9 +90,12 @@ namespace Acme.FooBarServer
 
             ++this.TurnNumber;
             this._lastTickTime = DateTime.UtcNow;
-            // Release all waiting threads and forget about this mutex
-            this._turnTick.Set();
+            // Release all waiting threads and forget about old mutex
+            var oldTick = this._turnTick;
             this._turnTick = new ManualResetEvent(false);
+            Thread.MemoryBarrier();
+            oldTick.Set();
+            oldTick.Dispose();
         }
 
         public void WaitForNextTurn()
