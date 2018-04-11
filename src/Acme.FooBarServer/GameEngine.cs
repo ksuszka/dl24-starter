@@ -13,7 +13,7 @@ namespace Acme.FooBarServer
         private readonly Random random = new Random();
         private readonly IDictionary<string, int> _playerTokens = new Dictionary<string, int>();
         private readonly IDictionary<int, Player> _players = new Dictionary<int, Player>();
-        private readonly ManualResetEvent _turnTick = new ManualResetEvent(false);
+        private ManualResetEvent _turnTick = new ManualResetEvent(false);
 
         public long TurnNumber
         {
@@ -90,8 +90,9 @@ namespace Acme.FooBarServer
 
             ++this.TurnNumber;
             this._lastTickTime = DateTime.UtcNow;
+            // Release all waiting threads and forget about this mutex
             this._turnTick.Set();
-            this._turnTick.Reset();
+            this._turnTick = new ManualResetEvent(false);
         }
 
         public void WaitForNextTurn()
