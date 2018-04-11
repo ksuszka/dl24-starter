@@ -185,7 +185,7 @@ namespace Acme.FooBarServer
                 });
 
             Console.WriteLine("Starting server on port {0}...", port);
-            var listener = new TcpListener(new IPAddress(new byte[] { 127, 0, 0, 1 }), port);
+            var listener = new TcpListener(new IPAddress(new byte[] { 0, 0, 0, 0 }), port);
             listener.Start();
             while (true)
             {
