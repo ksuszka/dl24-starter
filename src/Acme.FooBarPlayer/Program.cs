@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Chupacabra.PlayerCore.Host;
+﻿using Chupacabra.PlayerCore.Host;
 using Chupacabra.PlayerCore.Host.Forms;
 using Newtonsoft.Json;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Acme.FooBarPlayer
 {
@@ -29,7 +27,7 @@ namespace Acme.FooBarPlayer
 
             ReadCustomSettings();
 
-            var title = string.Format("FooBar {0}", Properties.Settings.Default.ServerPort);
+            var title = $"FooBar {Properties.Settings.Default.ServerPort}";
 
             _fileStatusMonitor = new FileStatusMonitor("status.txt");
             using (_formsStatusMonitor = new StatusMonitorDialogHost(title + " Status"))
@@ -60,11 +58,27 @@ namespace Acme.FooBarPlayer
         void ReadCustomSettings()
         {
             const string customSettingFile = "settings.json";
-            if (File.Exists(customSettingFile))
+            var files = new List<string>();
+            var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (directory != null)
             {
-                Logger.Info("Reading settings from {0} file.", customSettingFile);
-                var settings = File.ReadAllText(customSettingFile);
-                JsonConvert.PopulateObject(settings, Properties.Settings.Default);
+                var file = Path.Combine(directory.FullName, customSettingFile);
+                if (File.Exists(file))
+                {
+                    files.Add(file);
+                }
+                directory = directory.Parent;
+            }
+
+            files.Reverse();
+            if (files.Any())
+            {
+                files.ForEach(file =>
+                {
+                    Logger.Info($"Reading settings from {file} file.");
+                    var settings = File.ReadAllText(file);
+                    JsonConvert.PopulateObject(settings, Properties.Settings.Default);
+                });
             }
             else
             {

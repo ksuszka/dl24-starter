@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Chupacabra.PlayerCore.Host;
+﻿using Chupacabra.PlayerCore.Host;
 using Chupacabra.PlayerCore.Service;
 using NLog;
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Acme.FooBarPlayer
 {
