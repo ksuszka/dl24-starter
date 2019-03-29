@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 
 namespace Chupacabra.PlayerCore.Host
 {
     public abstract class EngineBase : IEngine
     {
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public string ServerHostname { get; set; }
         public int ServerPort { get; set; }
         public string Login { get; set; }

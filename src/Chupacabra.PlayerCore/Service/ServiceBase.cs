@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using NLog;
 
 namespace Chupacabra.PlayerCore.Service
 {
     public abstract class ServiceBase : IDisposable
     {
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         protected ServerTcpClient Client { get; private set; }
 
         protected ServiceBase(string hostname, int port)

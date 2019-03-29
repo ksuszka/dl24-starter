@@ -1,14 +1,15 @@
 ﻿using Chupacabra.PlayerCore.Host;
 using Chupacabra.PlayerCore.Service;
-using NLog;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Serilog;
 
 namespace Acme.FooBarPlayer
 {
     class FooBarEngine : EngineBase
     {
+        public StateHelper StateHelper { get; set; }
         public IStatusMonitor Monitor { get; set; }
 
         void IgnoreErrors(Action action, params int[] errorCodes)
@@ -21,7 +22,7 @@ namespace Acme.FooBarPlayer
             {
                 if (errorCodes.Contains(se.ErrorCode))
                 {
-                    Logger.Warn("IGNORING: {0}", se.Message);
+                    Log.Warning("IGNORING: {Message}", se);
                 }
                 else
                     throw;
@@ -36,7 +37,7 @@ namespace Acme.FooBarPlayer
             }
             catch (ServerException se)
             {
-                Logger.Warn("IGNORING: {0}", se.Message);
+                Log.Warning("IGNORING: {Message}", se);
             }
         }
 
@@ -44,7 +45,7 @@ namespace Acme.FooBarPlayer
         {
             try
             {
-                Logger.Info("Processing started.");
+                Log.Information("Processing started.");
                 using (var service = new FooBarService(ServerHostname, ServerPort))
                 {
                     service.Login(Login, Password);
@@ -79,7 +80,7 @@ namespace Acme.FooBarPlayer
                                 // Monitor is shown by pressing SPACE BAR in console window.
                                 Monitor.Set("engine/turn", turnNo);
                                 Monitor.Set("engine/tick", tick);
-                                Logger.Debug("tick {0}, turn {1}", tick, turnNo);
+                                Log.Debug("tick {Tick}, turn {TurnNo}", tick, turnNo);
                                 state.Something = string.Format("Turn: {0}, tick: {1}", turnNo, tick);
 
                                 // More complex sample of using monitor
@@ -92,12 +93,12 @@ namespace Acme.FooBarPlayer
                                 if (tick % 5 == 0)
                                 {
                                     // Simulate some command.
-                                    Logger.Info("data {0}", string.Join(", ", service.GetPrices()));
+                                    Log.Information("data {0}", string.Join(", ", service.GetPrices()));
 
                                     // Another command for which we ignore some errors
                                     IgnoreErrors(() =>
                                     {
-                                        Logger.Info("data {0}", string.Join(", ", service.GetPrices()));
+                                        Log.Information("data {0}", string.Join(", ", service.GetPrices()));
                                     }, 101, 102);
                                 }
 
@@ -112,7 +113,7 @@ namespace Acme.FooBarPlayer
                                 // Mark turn as finished even in case of error.
                                 Monitor.ConfirmTurn();
                                 StateHelper.Save(state);
-                                Logger.Info($"Turn length {turnStopwatch.ElapsedMilliseconds} ms");
+                                Log.Information("Turn length {TurnLength} ms", turnStopwatch.ElapsedMilliseconds);
                             }
 
                             // Wait till next turn.
@@ -123,7 +124,7 @@ namespace Acme.FooBarPlayer
                         }
                         catch (CommandsLimitReachedException ex)
                         {
-                            Logger.Warn(ex.Message);
+                            Log.Warning("{Message}", ex);
                             service.WaitEnd();
                         }
                     }
@@ -131,8 +132,8 @@ namespace Acme.FooBarPlayer
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.Message);
-                LogManager.Flush();
+                Log.Fatal(ex, "Unhandled exception {Exception}");
+                Log.CloseAndFlush();
                 if (Debugger.IsAttached)
                 {
                     // If this code is run under a debugger then we signal it that something went really wrong.
