@@ -1,5 +1,4 @@
 ﻿using Chupacabra.PlayerCore.Host;
-// using Chupacabra.PlayerCore.Host.Forms;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,8 @@ namespace Acme.FooBarPlayer
 {
     class Program
     {
-        public class Settings {
+        public class Settings
+        {
             public string ServerHostname { get; set; }
             public int ServerPort { get; set; }
             public string Login { get; set; }
@@ -35,10 +35,11 @@ namespace Acme.FooBarPlayer
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("customsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.AppSettings(config)
+                .ReadFrom.Configuration(config)
                 .CreateLogger();
             // ReadCustomSettings();
 
@@ -47,23 +48,23 @@ namespace Acme.FooBarPlayer
             _fileStatusMonitor = new FileStatusMonitor("status.txt");
             // using (_formsStatusMonitor = new StatusMonitorDialogHost(title + " Status"))
             // {
-                _engine = new FooBarEngine()
-                {
-                    StateHelper = new StateHelper(config["StateFilename"]),
-                    ServerHostname = config["ServerHostname"],
-                    ServerPort = int.Parse(config["ServerPort"]),
-                    Login = config["Login"],
-                    Password = config["Password"],
-//                    Monitor = new CompositeStatusMonitor(_fileStatusMonitor, _formsStatusMonitor.StatusMonitor)
-                    Monitor = _fileStatusMonitor
-                };
+            _engine = new FooBarEngine()
+            {
+                StateHelper = new StateHelper(config["StateFilename"]),
+                ServerHostname = config["ServerHostname"],
+                ServerPort = int.Parse(config["ServerPort"]),
+                Login = config["Login"],
+                Password = config["Password"],
+                //                    Monitor = new CompositeStatusMonitor(_fileStatusMonitor, _formsStatusMonitor.StatusMonitor)
+                Monitor = _fileStatusMonitor
+            };
 
-                if (args.Length > 0)
-                {
-                    _engine.ServerPort = int.Parse(args[0]);
-                }
+            if (args.Length > 0)
+            {
+                _engine.ServerPort = int.Parse(args[0]);
+            }
 
-                Core.RunConsole(_engine, title, KeyHandler);
+            Core.RunConsole(_engine, title, KeyHandler);
             // }
         }
 

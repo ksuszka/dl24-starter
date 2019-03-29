@@ -73,9 +73,9 @@ namespace Chupacabra.PlayerCore.Host
                     {
                         var valueString = (map.ContainsKey(path)) ? string.Format(": {0}", map[path]) : "";
                         var name = path.Split("/".ToCharArray()).Last();
-                        var currentPrefix = (isLast) ? "`- " : "+- ";
+                        var currentPrefix = (isLast) ? "└── " : "├── ";
                         sb.AppendLine(string.Format("{0}{1}{2}{3}", prefix, currentPrefix, name, valueString));
-                        prefix += (isLast) ? "   " : "|  ";
+                        prefix += (isLast) ? "    " : "│   ";
                     }
                     var children = tree[path].OrderBy(i => i).ToList();
                     for (int i = 0; i < children.Count; i++)
