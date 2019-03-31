@@ -13,13 +13,6 @@ namespace Acme.FooBarPlayer
 {
     class Program
     {
-        public class Settings
-        {
-            public string ServerHostname { get; set; }
-            public int ServerPort { get; set; }
-            public string Login { get; set; }
-            public string Password { get; set; }
-        }
         private FooBarEngine _engine;
         private FileStatusMonitor _fileStatusMonitor;
         // private IStatusMonitorDialog _formsStatusMonitor;
