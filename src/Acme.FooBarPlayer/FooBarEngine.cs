@@ -14,7 +14,7 @@ namespace Acme.FooBarPlayer
 
         void IgnoreErrors(Action action, params int[] errorCodes)
         {
-            try 
+            try
             {
                 action();
             }
@@ -132,7 +132,7 @@ namespace Acme.FooBarPlayer
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Unhandled exception {Exception}");
+                Log.Fatal(ex, "Unhandled exception");
                 Log.CloseAndFlush();
                 if (Debugger.IsAttached)
                 {

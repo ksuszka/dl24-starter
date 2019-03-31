@@ -7,30 +7,23 @@ Repozytorium zawiera szkielet bota grającego w zadania z konkursu Deadline24 Li
 
 Narzędzia:
 
-- Visual Studio 2013
-- .Net Framework 4.5
-- NuGet
-- PowerShell - wykorzystywany przez skrypt do generacji szablonu nowego bota.
+- .Net Core 2.2
 
 Biblioteki:
 
-- [NLog]
-- [Json.NET]
-
-[Json.NET]: http://json.codeplex.com/
-[NLog]: http://nlog-project.org/
-
+- [Serilog](https://serilog.net/)
+- [Json.NET](https://www.newtonsoft.com/json)
 
 ## Struktura
 
 - *tools*
-  - *generate_player.cmd* - skrypt do generacji szablonu nowego bota. Wymaga do działania PowerShella. Wykorzystuje do generacji projekt *Acme.FooBarPlayer*.
+  - *generate_player.cmd* - skrypt do generacji szablonu nowego bota. Wykorzystuje do generacji projekt *Acme.FooBarPlayer*.
 - *src* - katalog z kodami źródłowymi botów
   - *Acme.FooBarServer* - symulator prostego serwera gry.
   - *Acme.FooBarPlayer* - szablon prostego bota.
   - *Chupacabra.PlayerCore* - biblioteka pomocnicza dla botów.
 - *players* - miejsce na skompilowane wersje botów. Każdy bot trafia do osobnego podkatalogu.
-  - *\<nazwa\>_\<port\>* - katalog z botem *\<nazwa\>* łączącym się z serwerem na porcie *\<port\>* 
+  - *\<nazwa\>_\<port\>* - katalog z botem *\<nazwa\>* łączącym się z serwerem na porcie *\<port\>*
 - *Deploy\_\<nazwa\>\_\<port\>.cmd* - skrypt kopiujący binarki bota *\<nazwa\>* do folderu *players/\<nazwa\>\_\<port\>*
 
 

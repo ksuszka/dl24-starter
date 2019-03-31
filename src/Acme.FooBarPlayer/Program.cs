@@ -25,16 +25,11 @@ namespace Acme.FooBarPlayer
 
         private void Run(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("customsettings.json", optional: true, reloadOnChange: true)
-                .Build();
+            var config = ReadConfiguration();
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
-            // ReadCustomSettings();
 
             var title = $"FooBar {config["ServerPort"]}";
 
@@ -66,35 +61,28 @@ namespace Acme.FooBarPlayer
             // _formsStatusMonitor.Show();
         }
 
-        // void ReadCustomSettings()
-        // {
-        //     const string customSettingFile = "settings.json";
-        //     var files = new List<string>();
-        //     var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
-        //     while (directory != null)
-        //     {
-        //         var file = Path.Combine(directory.FullName, customSettingFile);
-        //         if (File.Exists(file))
-        //         {
-        //             files.Add(file);
-        //         }
-        //         directory = directory.Parent;
-        //     }
+        IConfiguration ReadConfiguration()
+        {
+            // Search for valid configuration files
+            var configFiles = new List<string> { "settings.json", "appsettings.json" };
+            var files = new List<string>();
+            var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (directory != null)
+            {
+                files.AddRange(configFiles
+                    .Select(_ => Path.Combine(directory.FullName, _))
+                    .Where(_ => File.Exists(_)));
+                directory = directory.Parent;
+            }
 
-        //     files.Reverse();
-        //     if (files.Any())
-        //     {
-        //         files.ForEach(file =>
-        //         {
-        //             Log.Information("Reading settings from {File} file.", file);
-        //             var settings = File.ReadAllText(file);
-        //             JsonConvert.PopulateObject(settings, Properties.Settings.Default);
-        //         });
-        //     }
-        //     else
-        //     {
-        //         Log.Information("No custom settings file found.");
-        //     }
-        // }
+            files.Reverse();
+
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory());
+
+            configBuilder = files.Aggregate(configBuilder, (cb, file) => cb.AddJsonFile(file, optional: true, reloadOnChange: true));
+
+            return configBuilder.Build();
+        }
     }
 }

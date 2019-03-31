@@ -1,0 +1,7 @@
+{
+  "ServerHostname": "localhost",
+  "ServerPort": 20000,
+  "Login": "zenek",
+  "Password": "gitara",
+  "StateFilename": "state_dev.json"
+}
