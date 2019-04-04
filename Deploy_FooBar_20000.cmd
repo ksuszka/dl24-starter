@@ -9,7 +9,7 @@
 @echo off
 
 set BASE=%~dp0
-set SRC_DIR=%BASE%\src\Acme.FooBarPlayer\bin\Debug
+set SRC_DIR=%BASE%\src\Acme.FooBarPlayer\bin\Debug\netcoreapp2.2\publish
 set DEST_DIR=%BASE%\players\FooBar_20000
 
 if not exist "%DEST_DIR%" mkdir "%DEST_DIR%"
@@ -24,7 +24,7 @@ if [ ! -n "$BASH" ];then exec bash $0 $*; fi #
 #
 set -e #
 BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" #
-SRC_DIR=${BASE}/src/Acme.FooBarPlayer/bin/Debug/ #
+SRC_DIR=${BASE}/src/Acme.FooBarPlayer/bin/Debug/netcoreapp2.2/publish #
 DEST_DIR=${BASE}/players/FooBar_20000 #
 mkdir -p "$DEST_DIR" #
 rsync -av "$SRC_DIR" "$DEST_DIR" --exclude-from=${BASE}/xcopy.exclude #
