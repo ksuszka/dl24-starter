@@ -10,7 +10,7 @@ namespace Chupacabra.PlayerCore.Service
     {
         private readonly ILineReader _reader;
         private readonly Queue<string> _tokens = new Queue<string>();
- 
+
         public Tokenizer(ILineReader reader)
         {
             _reader = reader;
@@ -36,9 +36,23 @@ namespace Chupacabra.PlayerCore.Service
             return int.Parse(ReadToken(), NumberFormatInfo.InvariantInfo);
         }
 
+        public int? ReadNullableInt(string nullMarker = "NONE")
+        {
+            var token = ReadToken();
+            if (token == nullMarker) return null;
+            return int.Parse(token, NumberFormatInfo.InvariantInfo);
+        }
+
         public double ReadDouble()
         {
             return double.Parse(ReadToken(), NumberFormatInfo.InvariantInfo);
+        }
+
+        public double? ReadNullableDouble(string nullMarker = "NONE")
+        {
+            var token = ReadToken();
+            if (token == nullMarker) return null;
+            return double.Parse(token, NumberFormatInfo.InvariantInfo);
         }
 
         public string ReadString()
