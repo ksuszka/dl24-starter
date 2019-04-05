@@ -14,7 +14,7 @@ echo %DATE% %TIME% Starting FooBar 20000 >> %BASE%\Run_FooBar_20000.log
 
 :loop
 cd /D %BASE%
-dotnet Acme.FooBarPlayer.dll
+dotnet Acme.FooBarPlayer.dll 20000
 echo ---------------------------------------------------------------------------
 echo %DATE% %TIME% Restarting FooBar 20000
 echo %DATE% %TIME% Restarting FooBar 20000 >> %BASE%\Run_FooBar_20000.log
@@ -31,7 +31,7 @@ echo ---------------------------------------------------------------------------
 echo $(date '+%Y-%m-%d %H:%M:%S') Starting FooBar 20000 #
 echo $(date '+%Y-%m-%d %H:%M:%S') Starting FooBar 20000 >> $BASE/Run_FooBar_20000.log #
 while true; do #
-(cd $BASE && dotnet Acme.FooBarPlayer.dll) #
+(cd $BASE && dotnet Acme.FooBarPlayer.dll 20000) #
 echo --------------------------------------------------------------------------- #
 echo $(date '+%Y-%m-%d %H:%M:%S') Restarting FooBar 20000 #
 echo $(date '+%Y-%m-%d %H:%M:%S') Restarting FooBar 20000 >> $BASE/Run_FooBar_20000.log #

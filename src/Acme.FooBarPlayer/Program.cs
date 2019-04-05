@@ -31,26 +31,22 @@ namespace Acme.FooBarPlayer
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
 
-            var title = $"FooBar {config["ServerPort"]}";
+            var serverPort = int.Parse((args.Length > 0) ? args[0] : config["ServerPort"] ?? "0");
+            var title = $"FooBar {serverPort}";
 
             _fileStatusMonitor = new FileStatusMonitor("status.txt");
             // using (_formsStatusMonitor = new StatusMonitorDialogHost(title + " Status"))
             // {
             _engine = new FooBarEngine()
             {
-                StateHelper = new StateHelper(config["StateFilename"]),
-                ServerHostname = config["ServerHostname"],
-                ServerPort = int.Parse(config["ServerPort"]),
+                StateHelper = new StateHelper(config["StateFilename"] ?? "state.json"),
+                ServerHostname = config["ServerHostname"] ?? "localhost",
+                ServerPort = serverPort,
                 Login = config["Login"],
                 Password = config["Password"],
                 //                    Monitor = new CompositeStatusMonitor(_fileStatusMonitor, _formsStatusMonitor.StatusMonitor)
                 Monitor = _fileStatusMonitor
             };
-
-            if (args.Length > 0)
-            {
-                _engine.ServerPort = int.Parse(args[0]);
-            }
 
             Core.RunConsole(_engine, title, KeyHandler);
             // }
